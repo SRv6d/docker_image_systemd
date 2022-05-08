@@ -1,0 +1,45 @@
+name: Build and Publish Images
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os:
+          - debian
+          - ubuntu
+        include:
+          - os: debian
+            codename: buster
+            version: 10
+          - os: debian
+            codename: bullseye
+            version: 11
+          - os: ubuntu
+            codename: focal
+            version: 20.04
+          - os: ubuntu
+            codename: jammy
+            version: 22.04
+          - os: ubuntu
+    steps:
+      - name: install QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: install buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+      - name: login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: srv6d
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: build and push image
+        uses: docker/build-push-action@v3
+        with:
+          push: true
+          context: "{{defaultContext}}:${{ matrix.os }}/${{ matrix.codename }}"
+          tags: srv6d/${{ matrix.os }}-systemd:${{ matrix.codename }},srv6d/${{ matrix.os }}-systemd:${{ matrix.version }}
+          platforms: linux/amd64,linux/arm/v7,linux/arm64
