@@ -1,0 +1,10 @@
+---
+name: Code Style
+on: push
+jobs:
+  code-style:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: lint YAML
+        uses: ibiqlik/action-yamllint@v3
