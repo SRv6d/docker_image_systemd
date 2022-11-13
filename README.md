@@ -20,4 +20,4 @@ An example usage might be to test deployments of services using Systemd but with
 
 ## Author Information
 
-Marvin Vogt (me@srv6d.space)
+Marvin Vogt (git@srv6d.space)
