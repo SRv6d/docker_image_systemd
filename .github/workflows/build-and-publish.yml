@@ -10,8 +10,12 @@ on:
     - cron: 30 5 * * 3
 jobs:
   build-and-publish:
+    name: >
+      Build and Publish ${{ matrix.os }}
+      ${{ matrix.codename }} (${{ matrix.version }})
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         os:
           - debian
