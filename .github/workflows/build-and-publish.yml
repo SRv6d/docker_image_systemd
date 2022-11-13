@@ -1,3 +1,4 @@
+---
 name: Build and Publish Images
 on:
   push:
@@ -6,7 +7,7 @@ on:
     paths:
       - "**/Dockerfile"
   schedule:
-    - cron: "30 5 * * 3"
+    - cron: 30 5 * * 3
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
@@ -45,5 +46,7 @@ jobs:
         with:
           push: true
           context: "{{defaultContext}}:${{ matrix.os }}/${{ matrix.codename }}"
-          tags: srv6d/${{ matrix.os }}-systemd:${{ matrix.codename }},srv6d/${{ matrix.os }}-systemd:${{ matrix.version }}
+          tags: |
+            srv6d/${{ matrix.os }}-systemd:${{ matrix.codename }}
+            srv6d/${{ matrix.os }}-systemd:${{ matrix.version }}
           platforms: linux/amd64,linux/arm/v7,linux/arm64
