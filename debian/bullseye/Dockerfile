@@ -1,5 +1,5 @@
 FROM debian:bullseye
-MAINTAINER srv6d
+LABEL org.opencontainers.image.authors="git@srv6d.space"
 
 ENV TZ=Europe/Berlin
 ENV LC_ALL C
@@ -7,14 +7,17 @@ ENV DEBIAN_FRONTEND noninteractive
 VOLUME [ "/sys/fs/cgroup" ]
 CMD ["/sbin/init"]
 
-RUN apt-get update && apt-get install -y \
+# hadolint ignore=DL3008
+RUN apt-get update && apt-get install --no-install-recommends -y \
     apt-transport-https \
     ca-certificates \
     gnupg2 \
     python3 \
     sudo \
     systemd \
-    systemd-sysv
+    systemd-sysv \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN rm -f /lib/systemd/system/multi-user.target.wants/* \
     /etc/systemd/system/*.wants/* \
