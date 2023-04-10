@@ -8,6 +8,7 @@ on:
       - "**/Dockerfile"
   schedule:
     - cron: 30 5 * * 3
+  workflow_dispatch:
 jobs:
   build-and-publish:
     name: >
