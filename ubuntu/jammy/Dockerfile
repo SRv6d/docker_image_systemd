@@ -1,5 +1,5 @@
 FROM ubuntu:jammy
-LABEL org.opencontainers.image.authors="git@srv6d.space"
+LABEL org.opencontainers.image.authors="m@rvinvogt.com"
 
 ENV TZ=Europe/Berlin
 ENV LC_ALL C
