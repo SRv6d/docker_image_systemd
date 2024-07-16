@@ -2,8 +2,8 @@ FROM debian:bookworm
 LABEL org.opencontainers.image.authors="m@rvinvogt.com"
 
 ENV TZ=Europe/Berlin
-ENV LC_ALL C
-ENV DEBIAN_FRONTEND noninteractive
+ENV LC_ALL=C
+ENV DEBIAN_FRONTEND=noninteractive
 VOLUME [ "/sys/fs/cgroup" ]
 CMD ["/sbin/init"]
 
