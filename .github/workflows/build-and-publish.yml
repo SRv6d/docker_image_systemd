@@ -25,6 +25,9 @@ jobs:
           - os: debian
             codename: bullseye
             version: 11
+          - os: debian
+            codename: bookworm
+            version: 12
           - os: ubuntu
             codename: focal
             version: 20.04
