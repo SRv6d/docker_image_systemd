@@ -31,6 +31,9 @@ jobs:
           - os: ubuntu
             codename: jammy
             version: 22.04
+          - os: ubuntu
+            codename: noble
+            version: 24.04
     steps:
       - name: install QEMU
         uses: docker/setup-qemu-action@v2
