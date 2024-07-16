@@ -13,6 +13,7 @@ An example usage might be to test deployments of services using Systemd but with
 - [Debian](https://hub.docker.com/repository/docker/srv6d/debian-systemd):
   - [`10` `buster`](./debian/buster)
   - [`11`, `bullseye`](./debian/bullseye)
+  - [`12`, `bookworm`](./debian/bookworm)
 
 ## License
 
