@@ -10,6 +10,7 @@ An example usage might be to test deployments of services using Systemd but with
 - [Ubuntu](https://hub.docker.com/repository/docker/srv6d/ubuntu-systemd):
   - [`20.04` `focal`](./ubuntu/focal)
   - [`22.04` `jammy`](./ubuntu/jammy)
+  - [`24.04` `noble`](./ubuntu/noble)
 - [Debian](https://hub.docker.com/repository/docker/srv6d/debian-systemd):
   - [`10` `buster`](./debian/buster)
   - [`11`, `bullseye`](./debian/bullseye)
