@@ -1,14 +1,15 @@
 ---
 name: Build and Publish Images
 on:
+  pull_request:
   push:
     branches:
       - main
-    paths:
-      - "**/Dockerfile"
   schedule:
     - cron: 30 5 * * 3
   workflow_dispatch:
+permissions:
+  contents: read
 jobs:
   build-and-publish:
     name: >
@@ -20,40 +21,65 @@ jobs:
       matrix:
         include:
           - os: debian
-            codename: buster
-            version: 10
-          - os: debian
-            codename: bullseye
-            version: 11
-          - os: debian
             codename: bookworm
             version: 12
-          - os: ubuntu
-            codename: focal
-            version: 20.04
+            platforms: linux/amd64,linux/arm/v7,linux/arm64
+          - os: debian
+            codename: trixie
+            version: 13
+            platforms: linux/amd64,linux/arm/v7,linux/arm64
           - os: ubuntu
             codename: jammy
             version: 22.04
+            platforms: linux/amd64,linux/arm/v7,linux/arm64
           - os: ubuntu
             codename: noble
             version: 24.04
+            platforms: linux/amd64,linux/arm/v7,linux/arm64
+          - os: ubuntu
+            codename: resolute
+            version: 26.04
+            platforms: linux/amd64,linux/arm/v7,linux/arm64
     steps:
       - name: install QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v4
       - name: install buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v4
+      - name: build image for smoke test
+        uses: docker/build-push-action@v7
+        with:
+          load: true
+          context: "{{defaultContext}}:${{ matrix.os }}/${{ matrix.codename }}"
+          platforms: linux/amd64
+          tags: local/${{ matrix.os }}-systemd:${{ matrix.codename }}
+      - name: smoke test systemd
+        env:
+          CONTAINER: systemd-smoke-${{ matrix.os }}-${{ matrix.codename }}
+          IMAGE: local/${{ matrix.os }}-systemd:${{ matrix.codename }}
+        run: |
+          docker run --detach \
+          --name "${CONTAINER}" \
+          --privileged \
+          --cgroupns=host \
+          --volume /sys/fs/cgroup:/sys/fs/cgroup:rw \
+          "${IMAGE}"
+          trap 'docker rm --force "${CONTAINER}"' EXIT
+          system_state="$(docker exec "${CONTAINER}" \
+          systemctl is-system-running --wait)"
+          test "${system_state}" = "running"
       - name: login to Docker Hub
-        uses: docker/login-action@v2
+        if: github.ref == 'refs/heads/main'
+        uses: docker/login-action@v4
         with:
           username: srv6d
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: build and push image
-        uses: docker/build-push-action@v3
+      - name: publish multi-platform image
+        if: github.ref == 'refs/heads/main'
+        uses: docker/build-push-action@v7
         with:
           push: true
           context: "{{defaultContext}}:${{ matrix.os }}/${{ matrix.codename }}"
           tags: |
             srv6d/${{ matrix.os }}-systemd:${{ matrix.codename }}
             srv6d/${{ matrix.os }}-systemd:${{ matrix.version }}
-          platforms: linux/amd64,linux/arm/v7,linux/arm64
+          platforms: ${{ matrix.platforms }}

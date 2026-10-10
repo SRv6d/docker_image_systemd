@@ -11,6 +11,7 @@ CMD ["/sbin/init"]
 RUN apt-get update && apt-get install --no-install-recommends -y \
     apt-transport-https \
     ca-certificates \
+    dbus \
     gnupg2 \
     python3 \
     sudo \
@@ -25,4 +26,5 @@ RUN rm -f /lib/systemd/system/multi-user.target.wants/* \
     /lib/systemd/system/sockets.target.wants/*udev* \
     /lib/systemd/system/sockets.target.wants/*initctl* \
     /lib/systemd/system/sysinit.target.wants/systemd-tmpfiles-setup* \
+    /lib/systemd/system/sysinit.target.wants/systemd-modules-load.service \
     /lib/systemd/system/systemd-update-utmp*
